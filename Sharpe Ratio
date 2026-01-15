@@ -1,0 +1,25 @@
+#Sharpe Ratio (SR = Return/Risk) or (Avg Daily Return / Volatility) * (sqrt(252))
+import yfinance as yf
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+tickers = ["TSLA", "AAPL", "MSFT", "GOOGL"]
+
+plt.figure(figsize=(14, 7))
+
+for ticker in tickers:
+    stock = yf.Ticker(ticker)
+    hist = stock.history(period="1y")["Close"]
+
+    log_returns = np.log(hist / hist.shift(1)).dropna()
+    cumulative_returns = (log_returns + 1).cumprod()  # start at 1
+    plt.plot(cumulative_returns.index, cumulative_returns, lw=2, label=ticker)
+
+plt.title("Cumulative Returns of Stocks Over Last Year", fontsize=16)
+plt.xlabel("Date", fontsize=12)
+plt.ylabel("Cumulative Return ($1 Invested)", fontsize=12)
+plt.grid(True, alpha=0.3)
+plt.legend(title="Stocks", loc="upper left", fontsize=10)
+plt.tight_layout()
+plt.show()
